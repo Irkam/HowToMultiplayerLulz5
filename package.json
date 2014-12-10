@@ -1,0 +1,9 @@
+{
+  "name": "how-to-multiplayer-lulz-5",
+  "version": "0.0.1",
+  "description": "multiplayer HTML5 shooter demo",
+  "dependencies": {
+    "express": "^4.10.4",
+    "socket.io": "^1.2.1"
+  }
+}
