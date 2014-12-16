@@ -2,13 +2,67 @@
 <html>
     <head>
         <title>HowToMultiplayerLulz5</title>
-        <link rel="stylesheet" media="screen" type="text/css" href="style.css" />
+        <style>
+            body{background-color: #000;}
+            canvas{background-color: #222;}
+        </style>        
         <script src="/socket.io/socket.io.js"></script>
-        <script>
-        var socket = io();
-        </script>
     </head>
-    <body>
+    <body onload="init();">
+        <!--<div align="center">
+            <canvas id="game-canvas" width="600" height="800"></canvas>
+        </div>-->
+
+        <script src="pixi.js"></script>
+        <script src="Networking.js"></script>
+        <script src="BackgroundScroller.js"></script>
+        <script src="Scroller.js"></script>
+        <script src="Player.js"></script>
+        <script src="Main.js"></script>
+        <script>
+            function init(){
+                main = new Main();
+            }
+
+            window.onkeydown=function(e){
+                var unicode = e.keyCode ? e.keyCode : e.charCode;
+                switch(unicode){
+                    case 37:
+                        player.move_left = 1;
+                        break;
+                    case 39:
+                        player.move_right = 1;
+                        break;
+                    case 38:
+                        player.move_up = 1;
+                        break;
+                    case 40:
+                        player.move_down = 1;
+                        break;
+                }
+
+                socket.emit('moving', {player: player.getMoves()});
+            }
+            window.onkeyup=function(e){
+                var unicode = e.keyCode ? e.keyCode : e.charCode;
+                switch(unicode){
+                    case 37:
+                        player.move_left = 0;
+                        break;
+                    case 39:
+                        player.move_right = 0;
+                        break;
+                    case 38:
+                        player.move_up = 0;
+                        break;
+                    case 40:
+                        player.move_down = 0;
+                        break;
+                }
+
+                socket.emit('moving', {player: player.getMoves()});
+            }
+        </script>
 
     </body>
 </html>
