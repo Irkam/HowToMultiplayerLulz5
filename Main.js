@@ -66,3 +66,8 @@ socket.on('updateCoords', function(coordsData){
     main.players[coordsData.id].triangle.position.x = coordsData.player.x;
     main.players[coordsData.id].triangle.position.y = coordsData.player.y;
 });
+
+socket.on('playerDisconnect', function(playerId){
+    main.stage.removeChild(main.players[playerId].triangle);
+    main.players.splice(playerId, 1);
+});

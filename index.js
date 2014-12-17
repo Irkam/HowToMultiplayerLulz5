@@ -1,3 +1,6 @@
+
+var UPDATE_INTERVAL = 100;
+
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
@@ -28,6 +31,8 @@ app.get('/res/stars-far.jpg', function(req, res){
     res.sendfile('res/stars-far.jpg');
 });
 
+players = new Array();
+
 io.on('connection', function(socket){
     console.log('client ' + socket.id + ' connected');
 
@@ -35,15 +40,21 @@ io.on('connection', function(socket){
     socket.on('ready', function(playerData){
         console.log('player ready');
         playerData.id = socket.id;
+        
+        socket.broadcast.emit('addPlayer', playerData);
 
         socket.player = playerData.player;
         
-        //io.sockets.clients().forEach(function(element, index, array){
-        //    socket.emit('addPlayer', element.id);
-        //});
+        players[socket.id] = playerData;
+
+        for(player in players){
+            if(player != socket.id){
+                console.log('sending other players to newcomer');
+                socket.emit('addPlayer', players[player])
+            }
+        }
 
         
-        socket.broadcast.emit('addPlayer', playerData);
     });
 
     socket.on('moving', function(moveData){
@@ -54,10 +65,24 @@ io.on('connection', function(socket){
 
     socket.on('updateCoords', function(coordsData){
         coordsData.id = socket.id;
+        players[socket.id].player.x = coordsData.player.x;
+        players[socket.id].player.y = coordsData.player.y;
         socket.broadcast.emit('updateCoords', coordsData);
+    });
+
+    socket.on('disconnect', function(){
+        socket.broadcast.emit('playerDisconnect', socket.id);
+        players.splice(socket.id, 1);
     });
 });
 
 http.listen(8080, function(){
     console.log('listening on *:8080');
 });
+
+setInterval(updateGame, UPDATE_INTERVAL);
+
+function updateGame(){
+    for(player in players){
+    }
+}
