@@ -1,9 +1,11 @@
 function Main(){
+    this.playerId = null;
     this.move_left = 0;
     this.move_right = 0;
     this.move_up = 0;
     this.move_down = 0;
     this.players = new Array();
+    this.actors = new Array();
 
     this.stage = new PIXI.Stage(0x303030);
     renderer = PIXI.autoDetectRenderer(600, 800);
@@ -37,10 +39,10 @@ function Main(){
 Main.prototype.update = function(){
     far.tilePosition.y += 0.256;
 
-    player.move();
-    this.players.forEach(function(pl){
-        pl.move();
-    });
+    //player.move();
+    //this.players.forEach(function(pl){
+    //    pl.move();
+    //});
 
     renderer.render(this.stage);
 
@@ -55,19 +57,48 @@ socket.on('addPlayer', function(playerData){
     main.stage.addChild(main.players[playerData.id].triangle);
 });
 
-socket.on('moving', function(moveData){
-    main.players[moveData.id].move_left = moveData.player.move_left;
-    main.players[moveData.id].move_right = moveData.player.move_right;
-    main.players[moveData.id].move_up = moveData.player.move_up;
-    main.players[moveData.id].move_down = moveData.player.move_down;
-});
-
 socket.on('updateCoords', function(coordsData){
-    main.players[coordsData.id].triangle.position.x = coordsData.player.x;
-    main.players[coordsData.id].triangle.position.y = coordsData.player.y;
+    if(coordsData.id != main.playerId){
+        main.players[coordsData.id].triangle.position.x = coordsData.player.x;
+        main.players[coordsData.id].triangle.position.y = coordsData.player.y;
+    }else{
+        player.triangle.position.x = coordsData.player.x;
+        player.triangle.position.y = coordsData.player.y;
+    }
 });
 
 socket.on('playerDisconnect', function(playerId){
     main.stage.removeChild(main.players[playerId].triangle);
     main.players.splice(playerId, 1);
+});
+
+socket.on('setupId', function(id){
+    main.playerId = id;
+});
+
+socket.on('newActor', function(actorData){
+    try{
+        main.actors[actorData.id] = actorData;
+        main.actors[actorData.id].circle = new PIXI.Graphics();
+        main.actors[actorData.id].circle.beginFill(0x232323);
+        main.actors[actorData.id].circle.drawCircle(actorData.x, actorData.y, actorData.radius);
+        main.actors[actorData.id].circle.endFill();
+        main.stage.addChild(main.actors[actorData.id].circle);
+    }catch(err){
+        console.log(err.message);
+    }
+});
+
+socket.on('moveActor', function(actorData){
+    try{
+        main.actors[actorData.id].circle.position.x = actorData.x;
+        main.actors[actorData.id].circle.position.y = actorData.y;
+    }catch(err){
+        console.log(err.message);
+    }
+});
+
+socket.on('killActor', function(actorId){
+    main.stage.removeChild(main.actors[actorId].circle);
+    main.actors.splice(actorId, 1);
 });

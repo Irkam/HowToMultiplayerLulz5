@@ -46,6 +46,7 @@ Player.prototype.move = function(){
     this.triangle.position.x = this.x;
     this.triangle.position.y = this.y;
 
+    /*
     if((this.move_left != this.move_right) || (this.move_up != this.move_down))
         socket.emit('updateCoords', {
             player:{
@@ -53,6 +54,7 @@ Player.prototype.move = function(){
                 y: this.y
             }
         });
+        */
 };
 
 Player.prototype.getMoves = function(){
