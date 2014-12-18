@@ -103,17 +103,17 @@ function updateGame(){
             players[player].player.y += (players[player].player.move_down * 5) - (players[player].player.move_up * 5);
         
             
-            if(players[player].player.x < 0 + 25)
-                players[player].player.x = 0 + 25;
+            if(players[player].player.x < 0)
+                players[player].player.x = 0;
         
-            if(players[player].player.x > 600 - 25)
-                players[player].player.x = 600 - 25;
+            if(players[player].player.x > 600)
+                players[player].player.x = 600;
             
-            if(players[player].player.y < 0 + 50)
-                players[player].player.y = 0 + 50;
+            if(players[player].player.y < 0)
+                players[player].player.y = 0;
             
-            if(players[player].player.y > 800 - 50)
-                players[player].player.y = 800 - 50;
+            if(players[player].player.y > 800)
+                players[player].player.y = 800;
             
             io.emit('updateCoords', players[player]);
         }
@@ -122,17 +122,18 @@ function updateGame(){
     for(actor in actors){
         actors[actor].move();
         if(actors[actor].y > 800){
-            console.log('yo moma left');
+            //console.log('yo moma left');
             io.emit('killActor', actors[actor].id);
             actors.splice(actor, 1);
         }
     }
-
+    
 }
 
 function spawnBitches(){
-    console.log('spawnd yo momma');
-    actors.push(new Asteroid(Math.floor(Math.random()*600), Math.floor(Math.random()*5), Math.floor(Math.random()*100)));
+    //console.log('spawnd yo momma');
+    actors.push(new Asteroid(Math.floor(Math.random()*600), 
+                    Math.floor(Math.random()*5)+1, Math.floor(Math.random()*100)+20));
 
     io.emit('newActor', actors[actors.length - 1]);
 
@@ -151,4 +152,17 @@ Asteroid.prototype.move = function(){
     this.y += this.speed;
     
     io.emit('moveActor', this);
+
+    for(player in players){
+        if(Math.pow((players[player].player.x - this.x), 2) + Math.pow((players[player].player.y - this.y), 2) <= Math.pow(this.radius, 2)){
+            //player is hit
+            //players[player].player.isHit = true;
+
+            players[player].player.x = 300;
+            players[player].player.y = 700;
+            io.emit('updateCoords', players[player]);
+        }
+    }
+
+
 };
