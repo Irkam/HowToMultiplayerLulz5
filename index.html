@@ -29,38 +29,43 @@
                 switch(unicode){
                     case 37:
                         player.move_left = 1;
+                        socket.emit('moving', {player: player.getMoves()});
                         break;
                     case 39:
                         player.move_right = 1;
+                        socket.emit('moving', {player: player.getMoves()});
                         break;
                     case 38:
                         player.move_up = 1;
+                        socket.emit('moving', {player: player.getMoves()});
                         break;
                     case 40:
                         player.move_down = 1;
+                        socket.emit('moving', {player: player.getMoves()});
                         break;
                 }
-
-                socket.emit('moving', {player: player.getMoves()});
             }
+
             window.onkeyup=function(e){
                 var unicode = e.keyCode ? e.keyCode : e.charCode;
                 switch(unicode){
                     case 37:
                         player.move_left = 0;
+                        socket.emit('moving', {player: player.getMoves()});
                         break;
                     case 39:
                         player.move_right = 0;
+                        socket.emit('moving', {player: player.getMoves()});
                         break;
                     case 38:
                         player.move_up = 0;
+                        socket.emit('moving', {player: player.getMoves()});
                         break;
                     case 40:
                         player.move_down = 0;
+                        socket.emit('moving', {player: player.getMoves()});
                         break;
                 }
-
-                socket.emit('moving', {player: player.getMoves()});
             }
         </script>
 

@@ -13,9 +13,10 @@ This project features NodeJS, Socket.io and Pixi JS.
 ###done
 * Client-side rendering
 * Sending players data from server
+* Making the game logic server-side instead of client-side
 
 ###todo
-* Making the game logic server-side instead of client-side
-    * including moving the players and hit-detection
+* including moving the players and hit-detection
 * `Player` class inherits from some `Actor` class
     * With an `Actor` class, generating enemies and such
+* optimizing netcode
